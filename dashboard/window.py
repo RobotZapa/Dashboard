@@ -14,7 +14,6 @@ class WindowGrid:
         '''
         self.rows = rows
         self.cols = cols
-        self.frame_delay = 30  # milliseconds per frame
         self.background_color = (0, 0, 0)
 
         pygame.init()
@@ -41,16 +40,26 @@ class WindowGrid:
         self.size = (x, y)
         self.tile_size = (self.size[0] / self.rows, self.size[1] / self.cols)
 
-        self.__window_thread()
+        self.delay = pygame.time.wait
 
     @concurrent
-    def __window_thread(self):
+    def loop(self, framerate):
+        framerate = int(1000/framerate)
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-            pygame.display.flip()
-            pygame.time.wait(self.frame_delay)
+            self.update()
+            pygame.time.wait(framerate)
+
+    def update(self):
+        '''
+        For use on Windows or Mac OS
+        A coroutine to update the screen (must be done on main thread)
+        :return:
+        '''
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit(0)
+        pygame.display.flip()
 
     def tile(self, row, col):
         '''

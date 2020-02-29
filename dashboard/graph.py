@@ -4,7 +4,7 @@ from dashboard.tools import *
 import math
 
 
-class GraphTile:
+class LiveGraph:
     def __init__(self, window, name, col=None, row=None, domain=(0, 1), **kwargs):
         '''
         TODO: To make this faster the entire frame should be translated one pixel every frame

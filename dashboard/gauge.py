@@ -4,7 +4,7 @@ from dashboard.tools import *
 import math
 
 
-class GaugeTile:
+class Gauge:
     def __init__(self, window, name, col=None, row=None, domain=(0, 1),
                  inlay=0, unit_ticks=True, tick_divisor=10, **kwargs):
         '''

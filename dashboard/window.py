@@ -45,11 +45,13 @@ class WindowGrid:
 
     @concurrent
     def __window_thread(self):
-        while True:
+        running = True
+        while running:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == QUIT:
                     pygame.quit()
-            pygame.display.flip()
+                    running=False
+            pygame.display.update()
             pygame.time.wait(self.frame_delay)
 
     def tile(self, row, col):

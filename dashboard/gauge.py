@@ -29,6 +29,7 @@ class Gauge:
         theta = math.pi / 2 - math.asin(1 - self.inlay * normal)
         self.gauge_units = (2.0 * math.pi - 2 * theta) / self.unit_delta
         self.gauge_start = 2.0 * math.pi - (math.pi / 2 + theta)
+        self.needle_center = int(min(self.size) / 64)
         self.colors = {'dial': (240, 240, 240), 'needle': (255, 0, 0), 'tick': (0, 0, 0),
                        'text': (0, 255, 0), 'name': (0, 0, 0)}
 
@@ -70,7 +71,7 @@ class Gauge:
             elif tick % self.tick_divisor == 0:
                 start = self.value_to_cords(tick, radius=self.radius - length * 2)
                 stop = self.value_to_cords(tick, radius=self.radius - length)
-                pygame.draw.aaline(self.surface, self.colors['tick'], start, stop, blend=4)
+                pygame.draw.aaline(self.surface, self.colors['tick'], start, stop)
 
     def labels(self):
         font_size = int(self.radius / 12)
@@ -92,6 +93,7 @@ class Gauge:
 
     def needle(self, x):
         pygame.draw.line(self.surface, self.colors['needle'], self.center, self.value_to_cords(x), 5)
+        pygame.draw.circle(self.surface, self.colors['tick'], self.center, self.needle_center)
 
     def update(self, x):
         pygame.draw.circle(self.surface, self.colors['dial'], self.center, self.radius + 1)

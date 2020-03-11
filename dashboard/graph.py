@@ -17,7 +17,7 @@ class LiveGraph:
         self.name = name
         self.domain = domain
         self.col, self.row = col, row
-        self.surface, self.position, self.size = window.tile(row, col)
+        self.surface, self.position, self.size = window.tile(col, row)
         self.graph_surface, self.graph_position, self.graph_size = \
             window.tile_fraction(col, row, top=1 / 8, left=1 / 8, bottom=1 / 8)
         self.colors = {'background': (255, 255, 255), 'line': (0, 0, 0),

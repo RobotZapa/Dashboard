@@ -4,7 +4,7 @@ from dashboard.tools import *
 
 
 class WindowGrid:
-    def __init__(self, cols, rows, size, name="Dashboard", background_color=(0, 0, 0)):
+    def __init__(self, cols, rows, size, name="Dashboard", background_color=(0, 0, 0), frame_rate=60):
         '''
         Creates a Dashboard Window
         :param cols: number of grid cols (units of width)
@@ -12,6 +12,7 @@ class WindowGrid:
         :param size: "600x800" or "fullscreen" or "resizable"
         :param name: the name of the window
         :param background_color: the color (r,g,b) of the background
+        :param frame_rate: frames per second (default 60)
         '''
         self.rows = rows
         self.cols = cols
@@ -43,12 +44,13 @@ class WindowGrid:
 
         self.sleep = pygame.time.wait
 
-    @concurrent
+        self.eventloop = Loop()
+        self.eventloop.add(self.update)
+        self.eventloop.add(self.sleep, int(1000 / frame_rate))
+        self.framerate = frame_rate
+
     def loop(self, framerate):
-        framerate = int(1000/framerate)
-        while True:
-            self.update()
-            pygame.time.wait(framerate)
+        self.eventloop.loop()
 
     def update(self):
         '''
@@ -98,12 +100,12 @@ class WindowGrid:
         col_start = col if type(col) == int else col[0]
         tile_size_x = self.tile_size[0] * col_count
         tile_size_y = self.tile_size[1] * row_count
-        size_x = int(tile_size_x - (bottom + right) * tile_size_x)
-        size_y = int(tile_size_y - (top + left) * tile_size_y)
+        size_x = int(tile_size_x - (left + right) * tile_size_x)
+        size_y = int(tile_size_y - (top + bottom) * tile_size_y)
         tile_pos_x = self.tile_size[0] * col_start
         tile_pos_y = self.tile_size[1] * row_start
-        pos_x = tile_pos_x + top * tile_size_x
-        pos_y = tile_pos_y + bottom * tile_size_y
+        pos_x = tile_pos_x + left * tile_size_x
+        pos_y = tile_pos_y + top * tile_size_y
         TileSurface = pygame.Surface((size_x, size_y), SRCALPHA)
         TileSurface.fill(self.background_color)
         return TileSurface, (pos_x, pos_y), (size_x, size_y)
@@ -145,6 +147,7 @@ class TileGrid:
         :param num_rows: number of grid rows (units of height)
         :param background_color: the color (r,g,b,a) to be used for the backgrounds
         '''
+        self.eventloop = window.eventloop
         self.window = window.window
         self.surface, self.position, self.size = window.tile(col, row)
         self.cols = num_cols
@@ -163,10 +166,10 @@ class TileGrid:
         col_count = 1 if type(col) == int else col[1] - col[0] + 1
         row_start = row if type(row) == int else row[0]
         col_start = col if type(col) == int else col[0]
-        sizex = self.tile_size[0] * row_count
-        sizey = self.tile_size[1] * col_count
-        posx = self.tile_size[0] * row_start + self.position[0]
-        posy = self.tile_size[1] * col_start + self.position[1]
+        sizex = self.tile_size[0] * col_count
+        sizey = self.tile_size[1] * row_count
+        posx = self.tile_size[0] * col_start + self.position[0]
+        posy = self.tile_size[1] * row_start + self.position[1]
         TileSurface = pygame.Surface((sizex, sizey), SRCALPHA)
         TileSurface.fill(self.background_color)
         return TileSurface, (posx, posy), (sizex, sizey)
@@ -188,12 +191,12 @@ class TileGrid:
         col_start = col if type(col) == int else col[0]
         tile_size_x = self.tile_size[0] * col_count
         tile_size_y = self.tile_size[1] * row_count
-        size_x = int(tile_size_x - (bottom + right) * tile_size_x)
-        size_y = int(tile_size_y - (top + left) * tile_size_y)
+        size_x = int(tile_size_x - (left + right) * tile_size_x)
+        size_y = int(tile_size_y - (top + bottom) * tile_size_y)
         tile_pos_x = self.tile_size[0] * col_start
         tile_pos_y = self.tile_size[1] * row_start
-        pos_x = tile_pos_x + top * tile_size_x
-        pos_y = tile_pos_y + bottom * tile_size_y
+        pos_x = tile_pos_x + left * tile_size_x
+        pos_y = tile_pos_y + top * tile_size_y
         TileSurface = pygame.Surface((size_x, size_y), SRCALPHA)
         TileSurface.fill(self.background_color)
         return TileSurface, (pos_x, pos_y), (size_x, size_y)

@@ -1,5 +1,23 @@
 import threading
 
+class Loop:
+    '''
+    A simple event loop for the window object
+    '''
+    def __init__(self):
+        self.functions = []
+
+    def add(self, function, *args, **kwargs):
+        self.functions.append((function, args, kwargs))
+
+    def loop(self):
+        for func, args, kwargs in self.functions:
+            if args and kwargs:
+                func(*args, **kwargs)
+            elif args:
+                func(*args)
+            else:
+                func()
 
 def is_color(x):
     '''

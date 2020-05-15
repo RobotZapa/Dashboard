@@ -14,8 +14,7 @@ The WindowGrid returns an object that must be passed to each tile you create.
     window = dash.WindowGrid(16, 9, "1920x1080 fullscreen", name='Test')
     gauge = dash.Gauge(window, 'Pressure', row=(2, 3), col=(0, 1), domain=(0, 101), inlay=20)
     while True:
-        window.update() # on linux this is unessisary (check window.loop(framerate))
-        window.sleep(16) # time in ms (or other sleep function)
+        window.loop()
         
 # TileGrid (window, col, row, num_cols, num_rows)
 This creates a tile that can be used in place of a WindowGrid.
@@ -30,8 +29,7 @@ buttons.
     lamp = dash.Indicator(subtile, col=0, row=0, name='Overflow, off=(50,50,50), on=(255,0,0)
     lamp.test()
     while True:
-        window.update() # on linux this is unessisary (check window.loop(framerate))
-        window.sleep(16) # time in ms (or other sleep function)
+        window.loop()
     
 ## Gauge (window, name, col, row, domain)
 A simple gauge tile.
